@@ -1,7 +1,12 @@
-import { useEffect } from "react"
+import { TaskContext } from "../contexts/TaskContext";
+import { useEffect, useContext } from "react"
 
 
-function TaskItem({ title, taskDeleteHandler, taskId }) {
+function TaskItem({ title, taskId }) {
+
+  const { taskDeleteHandler } = useContext(TaskContext);
+
+
   useEffect(() => {
     console.log('Mount');
 
