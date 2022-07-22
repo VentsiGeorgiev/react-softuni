@@ -1,20 +1,29 @@
 import TaskList from './components/TaskList';
 import styles from './App.module.css';
 import CreateTask from './components/CreateTask';
-import { useEffect, useState } from 'react';
+
+import useFetch from './hooks/useFetch';
+
+import useTodoApi from './hooks/useTodoApi'
 
 function App() {
 
-  const [tasks, setTasks] = useState([]);
+  // const [tasks, setTasks] = useState([]);
 
-  useEffect(() => {
-    const getTasks = async () => {
-      const res = await fetch("http://localhost:3030/jsonstore/todos/")
-      const data = await res.json();
-      setTasks(Object.values(data))
-    }
-    getTasks();
-  }, [])
+  // useEffect(() => {
+  //   const getTasks = async () => {
+  //     const res = await fetch("http://localhost:3030/jsonstore/todos/")
+  //     const data = await res.json();
+  //     setTasks(Object.values(data))
+  //   }
+  //   getTasks();
+  // }, [])
+
+  const [tasks, setTasks, isLoading] = useFetch("http://localhost:3030/jsonstore/todos/", []);
+
+  const { removeTodo } = useTodoApi();
+
+
 
   const taskCreateHandler = (newTask) => {
     setTasks(prev => [...tasks, {
@@ -23,7 +32,8 @@ function App() {
     }])
   }
 
-  const taskDeleteHandler = (taskId) => {
+  const taskDeleteHandler = async (taskId) => {
+    await removeTodo(taskId)
     setTasks(state => state.filter(x => x._id != taskId))
   }
 
@@ -35,7 +45,10 @@ function App() {
 
       <main>
 
-        <TaskList tasks={tasks} taskDeleteHandler={taskDeleteHandler} />
+        {isLoading
+          ? 'Loading...'
+          : <TaskList tasks={tasks} taskDeleteHandler={taskDeleteHandler} />
+        }
 
         <CreateTask taskCreateHandler={taskCreateHandler} />
 
