@@ -1,24 +1,20 @@
 import TaskList from './components/TaskList';
 import styles from './App.module.css';
 import CreateTask from './components/CreateTask';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 function App() {
 
-  const [tasks, setTasks] = useState([
-    {
-      _id: 1,
-      title: 'Learn JS'
-    },
-    {
-      _id: 2,
-      title: 'Learn HTML & CSS'
-    },
-    {
-      _id: 3,
-      title: 'Learn React'
-    },
-  ]);
+  const [tasks, setTasks] = useState([]);
+
+  useEffect(() => {
+    const getTasks = async () => {
+      const res = await fetch("http://localhost:3030/jsonstore/todos/")
+      const data = await res.json();
+      setTasks(Object.values(data))
+    }
+    getTasks();
+  }, [])
 
   const taskCreateHandler = (newTask) => {
     setTasks(prev => [...tasks, {
