@@ -11,7 +11,7 @@ function TaskList() {
       {tasks.map(x =>
         <TaskItem
           key={x._id}
-          title={x.title}
+          task={x}
           taskId={x._id}
         />
       )}
